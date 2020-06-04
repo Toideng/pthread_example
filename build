@@ -1,0 +1,35 @@
+#!/usr/bin/bash
+
+
+
+recognized=0
+
+
+
+if [[ ($# -lt 1) || (($# -eq 1) && (($1 == "main") || ($1 == "debug"))) ]]
+then
+	recognized=1
+	gcc -ggdb -march=native -masm=intel\
+		main.c\
+		blake2b.c\
+		-pedantic -Wall -Wextra\
+		-I ./libs/raylib/src\
+		-Wl,-rpath='./libs/raylib/src'\
+		-L ./libs/raylib/src\
+		-lraylib -lm -lpthread\
+		-o run.out
+	if [ $? != 0 ]
+	then
+		echo "*** Compilation failed, stop"
+		exit $?
+	fi
+	# Post-compilation commands...
+	exit 0
+fi
+
+
+
+if [[ $recognized -ne 1 ]]
+then
+	echo "Argument not recognized, try again"
+fi
